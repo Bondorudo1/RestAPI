@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
-import mongoose from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -23,7 +23,7 @@ const server = http.createServer(app);
 mongoose
   .connect(mongoUrl, {
     serverSelectionTimeoutMS: 5000,
-  })
+  } as ConnectOptions)
   .then(() => {
     console.log("Connected to Mongo Database");
     app.listen(8081, () => {
