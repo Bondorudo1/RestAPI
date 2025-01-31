@@ -1,14 +1,21 @@
+import bcrypt from "bcrypt";
 import crypto from "crypto";
+import dotenv from "dotenv";
 
-const SECRET = "ILIA-REST-API";
+dotenv.config();
 
-export const random = () => {
- return crypto.randomBytes(128).toString("base64");
+const SALT_ROUNDS: number = parseInt(process.env.BCRYPT_SALT_ROUNDS ?? "12", 10);
+
+
+export const random = (length: number = 16): string => {
+  return crypto.randomBytes(length).toString("hex");
 };
 
-export const authentication = (salt: string, password: string) => {
-  return crypto
-    .createHmac("sha256", [salt, password].join("/"))
-    .update(SECRET)
-    .digest("hex");
+export const hashPassword = async (password: string): Promise<string> => {
+  return await bcrypt.hash(password, SALT_ROUNDS);
 };
+
+export const verifyPassword = async (
+  password: string,
+  hashedPassword: string
+): Promise<boolean> => await bcrypt.compare(password, hashedPassword);
